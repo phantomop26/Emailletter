@@ -1,0 +1,34 @@
+# VenueHooper Email Campaign Automation
+# Dependencies for the complete venue outreach system
+
+# Core Framework
+streamlit>=1.28.0
+pandas>=2.0.0
+
+# Email Scraping
+playwright>=1.40.0
+requests>=2.31.0
+beautifulsoup4>=4.12.0
+
+# AI & API Integration  
+openai>=1.3.0
+resend>=0.6.0
+
+# Gmail API (Optional)
+google-auth>=2.23.0
+google-auth-oauthlib>=1.1.0
+google-auth-httplib2>=0.1.1
+google-api-python-client>=2.100.0
+
+# Utilities
+python-dotenv>=1.0.0
+asyncio
+re
+json
+os
+time
+datetime
+typing
+
+# Note: Install with: pip install -r requirements.txt
+# For Playwright browsers: playwright install
