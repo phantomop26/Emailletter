@@ -140,36 +140,17 @@ class VenueHooperWorkflow:
     def generate_custom_email(self, venue_data: dict, analysis: dict) -> dict:
         """Generate customized email based on venue analysis"""
         venue_name = venue_data['name']
-        venue_type = analysis.get('venue_type', 'general')
         
-        # Customize greeting and content based on venue type
-        if venue_type == 'restaurant':
-            greeting = f"Hello {venue_name} Team"
-            context = "We're looking to host a private dining event"
-        elif venue_type == 'bar':
-            greeting = f"Hello {venue_name} Team"
-            context = "We're interested in booking your space for a private event"
-        elif venue_type == 'music_venue':
-            greeting = f"Hello {venue_name} Team"
-            context = "We're looking to book your venue for a special event"
-        else:
-            greeting = "Hello Team"
-            context = "We're reaching out about hosting an event"
-        
-        subject = f"Partnership / Booking Inquiry from {self.org_name} — {venue_name}"
+        # Standard VenueHopper email format
+        subject = "Private Event Inquiry from VenueHopper"
         
         body = f"""
-        {greeting},<br><br>
-        I'm {self.your_name} from {self.org_name}. {context}.<br><br>
-        Could you please confirm:<br>
-        (1) whether you accept external events<br>
-        (2) typical availability in November 2025<br>
-        (3) typical capacity and sample pricing<br>
-        (4) any venue requirements or minimum spend<br>
-        (5) best contact and billing email?<br><br>
-        If you'd prefer a call, share a convenient time or your phone number.<br><br>
-        Thank you — {self.your_name}, {self.org_name}, {self.your_phone}<br><br>
-        <em>To opt out of future emails, reply "unsubscribe".</em>
+        Hi {venue_name},<br><br>
+        I'm {self.your_name} from VenueHopper. We're reaching out to inquire if your venue hosts private events. We're looking for a venue for 2 of our private events: 1 in January for 30 guests, open bar, small bites, and another in March, 75 guests, also open bar and small bites. Just wondering if you had any availability, and what your capacity and packages looked like. Thanks! <br><br>
+        Best, {self.your_name}, VenueHopper, {self.your_phone}<br><br>
+
+
+        To opt out of future emails, reply "unsubscribe".
         """
         
         return {
@@ -200,11 +181,13 @@ class VenueHooperWorkflow:
             st.warning(f"🧪 TEST MODE: Sending to {test_email} instead of original recipient")
         
         data = {
-            "from": self.sender_email,
-            "to": [recipient],
+            "bcc": [],
+            "cc": [],
+            "from": "hello@avenuenow.co",
+            "replyTo": [],
             "subject": email_data['subject'],
-            "html": email_data['html_body'],
-            "text": email_data['text_body']
+            "to": [recipient],
+            "html": email_data['html_body']
         }
         
         try:
