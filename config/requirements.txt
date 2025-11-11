@@ -22,8 +22,6 @@ google-api-python-client>=2.100.0
 
 # Utilities
 python-dotenv>=1.0.0
-asyncio
-re
 json
 os
 time
