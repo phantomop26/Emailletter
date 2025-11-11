@@ -7,15 +7,37 @@ import re
 import requests
 import asyncio
 import pandas as pd
-from playwright.async_api import async_playwright
+import subprocess
+import sys
+import os
 from typing import List, Set
 import time
+
+# Try to import playwright, install if needed (for Streamlit Cloud)
+try:
+    from playwright.async_api import async_playwright
+    PLAYWRIGHT_AVAILABLE = True
+except ImportError:
+    print("📦 Installing Playwright...")
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "playwright"])
+    subprocess.check_call([sys.executable, "-m", "playwright", "install", "chromium"])
+    try:
+        from playwright.async_api import async_playwright
+        PLAYWRIGHT_AVAILABLE = True
+        print("✅ Playwright installed successfully!")
+    except ImportError:
+        print("❌ Playwright installation failed, using fallback methods only")
+        PLAYWRIGHT_AVAILABLE = False
 
 # Email regex pattern
 EMAIL_REGEX = r'[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+'
 
 async def scrape_emails_playwright(url: str, timeout: int = 15000) -> List[str]:
     """Scrape emails using Playwright (handles JavaScript)"""
+    if not PLAYWRIGHT_AVAILABLE:
+        print("⚠️ Playwright not available, skipping browser-based scraping")
+        return []
+        
     try:
         async with async_playwright() as p:
             browser = await p.chromium.launch(headless=True)

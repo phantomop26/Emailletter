@@ -12,10 +12,39 @@ import time
 import json
 import os
 import sys
+import subprocess
 from datetime import datetime
-from playwright.async_api import async_playwright
 from openai import OpenAI
 from typing import List
+
+# Setup Playwright for Streamlit Cloud
+@st.cache_resource
+def setup_playwright():
+    """Install Playwright browsers if not available (for Streamlit Cloud)"""
+    try:
+        from playwright.async_api import async_playwright
+        return True
+    except ImportError:
+        with st.spinner("📦 Installing Playwright for web scraping..."):
+            try:
+                subprocess.check_call([sys.executable, "-m", "pip", "install", "playwright==1.40.0"])
+                subprocess.check_call([sys.executable, "-m", "playwright", "install", "chromium"])
+                from playwright.async_api import async_playwright
+                st.success("✅ Playwright installed successfully!")
+                return True
+            except Exception as e:
+                st.warning(f"⚠️ Could not install Playwright: {e}. Some scraping features may be limited.")
+                return False
+
+# Initialize Playwright (only runs once due to @st.cache_resource)
+PLAYWRIGHT_AVAILABLE = setup_playwright()
+
+# Import playwright after setup
+if PLAYWRIGHT_AVAILABLE:
+    try:
+        from playwright.async_api import async_playwright
+    except ImportError:
+        PLAYWRIGHT_AVAILABLE = False
 
 # Add parent directories to path for imports
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))

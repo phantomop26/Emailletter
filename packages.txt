@@ -1,1 +1,2 @@
-playwright
+# Streamlit Cloud system packages
+# Playwright will be installed via requirements.txt and browser setup in code
