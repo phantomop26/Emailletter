@@ -28,11 +28,10 @@ def main():
     print(f"🎯 App path: {app_path}")
     print("🌐 Opening in browser...")
     
-    # Run streamlit
+    # Run streamlit (cloud deployment will use default port)
     subprocess.run([
         sys.executable, "-m", "streamlit", "run", 
-        str(app_path),
-        "--server.port", "8502"
+        str(app_path)
     ])
 
 if __name__ == "__main__":
