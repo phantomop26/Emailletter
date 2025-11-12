@@ -29,8 +29,48 @@ except ImportError:
         print("❌ Playwright installation failed, using fallback methods only")
         PLAYWRIGHT_AVAILABLE = False
 
-# Email regex pattern
-EMAIL_REGEX = r'[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+'
+# More accurate email regex pattern
+EMAIL_REGEX = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b'
+
+def is_valid_email(email: str) -> bool:
+    """Validate if an email is actually a real email address"""
+    # Basic format check
+    if not re.match(EMAIL_REGEX, email):
+        return False
+    
+    # Remove obvious false positives
+    false_patterns = [
+        r'@\d+\.',  # Numbers as domain (like @20..48)
+        r'@[0-9]+$',  # Pure numbers after @
+        r'^\d+@',   # Starting with numbers only
+        r'@.*\.\d+$',  # Ending with numbers after dot
+        r'@.*-\d+\.',  # Version numbers (like prod@2.8.1)
+        r'@.*\d\.\d',  # Version patterns (like @2.8)
+    ]
+    
+    for pattern in false_patterns:
+        if re.search(pattern, email):
+            return False
+    
+    # Must have valid TLD (common email domains)
+    valid_tlds = [
+        'com', 'org', 'net', 'edu', 'gov', 'mil', 'int', 'co', 'io', 'ly',
+        'me', 'us', 'uk', 'ca', 'au', 'de', 'fr', 'it', 'es', 'ru', 'jp',
+        'cn', 'br', 'in', 'mx', 'ar', 'cl', 'pe', 'co.uk', 'com.au'
+    ]
+    
+    domain_part = email.split('@')[1] if '@' in email else ''
+    tld = domain_part.split('.')[-1].lower() if '.' in domain_part else ''
+    
+    # Check if it's a valid TLD or common domain extension
+    if not (tld in valid_tlds or len(tld) >= 2):
+        return False
+        
+    return True
+
+def filter_valid_emails(emails: List[str]) -> List[str]:
+    """Filter out invalid emails from a list"""
+    return [email for email in emails if is_valid_email(email)]
 
 async def scrape_emails_playwright(url: str, timeout: int = 15000) -> List[str]:
     """Scrape emails using Playwright (handles JavaScript)"""
@@ -53,7 +93,8 @@ async def scrape_emails_playwright(url: str, timeout: int = 15000) -> List[str]:
             await browser.close()
             
             emails = re.findall(EMAIL_REGEX, content)
-            return list(set(emails))  # Remove duplicates
+            valid_emails = filter_valid_emails(emails)
+            return list(set(valid_emails))  # Remove duplicates
             
     except Exception as e:
         print(f"Playwright error for {url}: {e}")
@@ -74,7 +115,8 @@ def scrape_emails_requests(url: str) -> List[str]:
         response.raise_for_status()
         
         emails = re.findall(EMAIL_REGEX, response.text)
-        return list(set(emails))
+        valid_emails = filter_valid_emails(emails)
+        return list(set(valid_emails))
         
     except Exception as e:
         print(f"Requests error for {url}: {e}")

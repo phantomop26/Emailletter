@@ -58,7 +58,7 @@ except ImportError as e:
     # Fallback imports if needed
 
 # Configuration
-EMAIL_REGEX = r'[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+'
+EMAIL_REGEX = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b'
 
 class VenueHooperWorkflow:
     def __init__(self):
