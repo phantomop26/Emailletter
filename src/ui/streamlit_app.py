@@ -144,14 +144,26 @@ class VenueHooperWorkflow:
         # Standard VenueHopper email format
         subject = "Private Event Inquiry from VenueHopper"
         
-        body = f"""
-        Hi {venue_name},<br><br>
-        I'm {self.your_name} from VenueHopper. We're reaching out to inquire if your venue hosts private events. We're looking for a venue for 2 of our private events: 1 in January for 30 guests, open bar, small bites, and another in March, 75 guests, also open bar and small bites. Just wondering if you had any availability, and what your capacity and packages looked like. Thanks! <br><br>
-        Best, {self.your_name}, VenueHopper, {self.your_phone}<br><br>
-
-
-        To opt out of future emails, reply "unsubscribe".
-        """
+        body = f"""<div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+        <p>Hi <strong>{venue_name}</strong>,</p>
+        
+        <p>I'm <strong>Aventa</strong> from <strong>VenueHopper</strong>. We're reaching out to inquire if your venue hosts private events.</p>
+        
+        <p>We're looking for a venue for <strong>2 private events</strong>:</p>
+        <ul>
+            <li><strong>January event:</strong> 30 guests, open bar, small bites</li>
+            <li><strong>March event:</strong> 75 guests, open bar, small bites</li>
+        </ul>
+        
+        <p>Just wondering if you had any availability, and what your capacity and packages looked like. Thanks!</p>
+        
+        <p>Best regards,<br>
+        <strong>Aventa</strong><br>
+        VenueHopper</p>
+        
+        <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
+        <p style="font-size: 12px; color: #888;">To opt out of future emails, reply "unsubscribe".</p>
+        </div>"""
         
         return {
             'subject': subject,
