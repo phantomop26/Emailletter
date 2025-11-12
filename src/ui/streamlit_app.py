@@ -178,19 +178,7 @@ class VenueHooperWorkflow:
             "Content-Type": "application/json"
         }
         
-        # Check if test mode is enabled
-        def get_config(key, default=''):
-            try:
-                return st.secrets.get(key, os.getenv(key, default))
-            except:
-                return os.getenv(key, default)
-        
-        test_email = get_config('TEST_EMAIL')
-        force_test = get_config('FORCE_TEST_EMAIL', '').lower() == 'true'
-        
-        if force_test and test_email:
-            recipient = test_email
-            st.warning(f"🧪 TEST MODE: Sending to {test_email} instead of original recipient")
+        # Test mode is now handled by the UI, not forced globally
         
         data = {
             "bcc": [],
@@ -565,10 +553,15 @@ def main():
                 col1, col2 = st.columns(2)
                 
                 with col1:
-                    test_mode = st.checkbox("🧪 Test Mode (send to test email only)", value=True)
+                    test_mode = st.checkbox("🧪 Test Mode (send to test email only)", value=False, 
+                                          help="Enable this to send all emails to a test address instead of actual venues")
                     
                     if test_mode:
                         test_email = st.text_input("Test Email Address", value="11k34sahilkumarsingh@gmail.com")
+                        st.info("🧪 **Test Mode Active** - Emails will be sent to test address only")
+                    else:
+                        st.success("🚀 **Production Mode** - Emails will be sent to actual venue addresses")
+                        st.warning("⚠️ Make sure you have permission to email these venues")
                 
                 with col2:
                     if selected_venues:
